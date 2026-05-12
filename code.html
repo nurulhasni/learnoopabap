@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materi Belajar OOP di ABAP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf8f4;
+      --surface: #ffffff;
+      --accent: #1a3a5c;
+      --accent-light: #2d5f8a;
+      --accent-subtle: #e8eff7;
+      --code-bg: #1b1e2b;
+      --code-text: #c9d1d9;
+      --text-primary: #1a1a1a;
+      --text-muted: #5a5a5a;
+      --border: #d4d0c8;
+      --highlight: #f5e6b8;
+      --green: #1a7a47;
+      --red: #b5332e;
+      --orange: #c47a20;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PRINT STYLES ── */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .page-break { page-break-before: always; }
+      .no-break { page-break-inside: avoid; }
+      .cover-page { page-break-after: always; }
+      .toc-page { page-break-after: always; }
+      pre { page-break-inside: avoid; font-size: 9pt !important; }
+      table { page-break-inside: avoid; }
+      h2 { page-break-after: avoid; }
+      h3 { page-break-after: avoid; }
+    }
+
+    /* ── COVER PAGE ── */
+    .cover-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(160deg, #0f1923 0%, #1a3a5c 40%, #2d5f8a 100%);
+      color: white;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-page::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 80%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cover-page::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f5e6b8, #d4a843, #f5e6b8);
+    }
+
+    .cover-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 40px;
+      padding: 8px 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .cover-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .cover-subtitle {
+      font-family: 'Source Serif 4', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 50px;
+      max-width: 500px;
+    }
+
+    .cover-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    .cover-icon {
+      font-size: 60px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    /* ── TOC PAGE ── */
+    .toc-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 60px;
+    }
+
+    .toc-header {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 40px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .toc-list {
+      list-style: none;
+      counter-reset: toc-counter;
+    }
+
+    .toc-list li {
+      counter-increment: toc-counter;
+      padding: 14px 0;
+      border-bottom: 1px dotted var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .toc-list li::before {
+      content: counter(toc-counter, decimal-leading-zero);
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--accent);
+      min-width: 36px;
+    }
+
+    .toc-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .toc-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 60px 80px;
+    }
+
+    /* ── CHAPTER HEADERS ── */
+    .chapter-header {
+      margin: 60px 0 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .chapter-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 6px;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 32px 0 12px;
+    }
+
+    h4 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 24px 0 8px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      text-align: justify;
+    }
+
+    strong { color: var(--accent); }
+
+    /* ── CODE BLOCKS ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0 24px;
+      overflow-x: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      border-left: 4px solid var(--accent);
+    }
+
+    pre .comment { color: #6a737d; font-style: italic; }
+    pre .keyword { color: #ff7b72; }
+    pre .string { color: #a5d6ff; }
+    pre .type { color: #ffa657; }
+    pre .number { color: #79c0ff; }
+    pre .method { color: #d2a8ff; }
+    pre .output { color: #8b949e; font-style: italic; }
+
+    code {
+      font-family: 'DM Mono', monospace;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.88em;
+    }
+
+    /* ── TABLES ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 13px;
+    }
+
+    thead th {
+      background: var(--accent);
+      color: white;
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) { background: rgba(0,0,0,0.015); }
+    tbody tr:hover { background: var(--accent-subtle); }
+
+    td code {
+      font-size: 0.85em;
+    }
+
+    /* ── INFO BOXES ── */
+    .info-box {
+      background: var(--accent-subtle);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .info-box .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .warn-box {
+      background: #fef3e2;
+      border-left: 4px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .warn-box .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+
+    /* ── DIAGRAM BOXES ── */
+    .diagram {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .diagram-left {
+      text-align: left;
+    }
+
+    /* ── ANALOGY BOX ── */
+    .analogy {
+      background: linear-gradient(135deg, #f8f4ee, #faf6ef);
+      border: 1px solid #e8dcc8;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0 24px;
+    }
+
+    .analogy .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .analogy p { margin-bottom: 6px; }
+
+    /* ── SUMMARY BOX ── */
+    .summary-box {
+      background: linear-gradient(135deg, #1a2332, #1a3a5c);
+      color: white;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 24px 0;
+    }
+
+    .summary-box h4 {
+      color: #f5e6b8;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      margin: 0 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .summary-box table { margin: 0; }
+    .summary-box thead th { background: rgba(255,255,255,0.1); color: #f5e6b8; }
+    .summary-box tbody td { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.08); }
+    .summary-box td code { background: rgba(255,255,255,0.1); color: #a5d6ff; }
+    .summary-box tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    /* ── TIPS BOX ── */
+    .tips-box {
+      background: #f0f9f0;
+      border: 1px solid #c8e6c8;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .tips-box .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .tips-box ol {
+      padding-left: 20px;
+    }
+
+    .tips-box li {
+      margin-bottom: 6px;
+      color: #2d5a2d;
+    }
+
+    /* ── SEPARATOR ── */
+    hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 30px;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- COVER PAGE -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="cover-page">
+    <div class="cover-badge">SAP ABAP Development</div>
+    <div class="cover-icon">{ }</div>
+    <div class="cover-title">Object-Oriented<br>Programming di ABAP</div>
+    <div class="cover-subtitle">Panduan lengkap dari dasar hingga mahir — dengan studi kasus dan contoh kode</div>
+    <div class="cover-meta">ABAP Objects &nbsp;·&nbsp; Dari Konsep Sampai Praktik &nbsp;·&nbsp; 2025</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TABLE OF CONTENTS -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="toc-page">
+    <div class="toc-header">Daftar Isi</div>
+    <ul class="toc-list">
+      <li>
+        <div>
+          <div class="toc-title">Pengertian & Konsep Dasar OOP</div>
+          <div class="toc-desc">Empat pilar OOP, perbedaan procedural vs OOP</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Class & Object</div>
+          <div class="toc-desc">Blueprint, instance, struktur class di ABAP</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Visibility / Access Modifiers</div>
+          <div class="toc-desc">PUBLIC, PROTECTED, PRIVATE</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Constructor</div>
+          <div class="toc-desc">Instance constructor & static constructor</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Static vs Instance Members</div>
+          <div class="toc-desc">Perbedaan, penggunaan, contoh kode</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Inheritance (Pewarisan)</div>
+          <div class="toc-desc">Parent-child, REDEFINITION, super-></div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Polymorphism</div>
+          <div class="toc-desc">Satu interface banyak perilaku</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Interface</div>
+          <div class="toc-desc">Kontrak, implementasi ganda</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Abstract Class & Method</div>
+          <div class="toc-desc">Class yang tidak bisa diinstansiasi</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Events</div>
+          <div class="toc-desc">Publisher-subscriber pattern di ABAP</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Friend Class & Singleton Pattern</div>
+          <div class="toc-desc">Akses khusus dan pola desain</div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="toc-title">Studi Kasus: Sistem HR</div>
+          <div class="toc-desc">Integrasi semua konsep dalam satu proyek</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- BAB 1 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content">
+
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 01</div>
+      <h2>Pengertian & Konsep Dasar OOP</h2>
+    </div>
+
+    <p><strong>Object-Oriented Programming (OOP)</strong> adalah paradigma pemrograman yang mengorganisir kode berdasarkan konsep <strong>objek</strong> — bukan berdasarkan fungsi atau logika prosedural.</p>
+
+    <p>Di ABAP, OOP diperkenalkan sejak <strong>ABAP Objects</strong> (SAP NetWeaver 6.10+). SAP sendiri secara agresif mendorong penggunaan OOP, terutama untuk:</p>
+
+    <ul>
+      <li>Enhancement Framework</li>
+      <li>BAdI (Business Add-Ins)</li>
+      <li>ABAP CDS Views</li>
+      <li>SAP Fiori / RAP (RESTful ABAP Programming)</li>
+    </ul>
+
+    <h3>4 Pilar Utama OOP</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Pilar</th>
+          <th>Penjelasan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Encapsulation</strong></td>
+          <td>Menyembunyikan detail internal, hanya menampilkan yang perlu</td>
+        </tr>
+        <tr>
+          <td><strong>Inheritance</strong></td>
+          <td>Pewarisan sifat dan perilaku dari class parent ke child</td>
+        </tr>
+        <tr>
+          <td><strong>Polymorphism</strong></td>
+          <td>Satu interface, banyak implementasi berbeda</td>
+        </tr>
+        <tr>
+          <td><strong>Abstraction</strong></td>
+          <td>Menyederhanakan kompleksitas dengan menyembunyikan detail</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Perbedaan ABAP Procedural vs OOP</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ABAP Procedural</th>
+          <th>ABAP OOP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Subroutines (FORM)</td>
+          <td>Methods</td>
+        </tr>
+        <tr>
+          <td>Function Modules</td>
+          <td>Classes &amp; Objects</td>
+        </tr>
+        <tr>
+          <td>Global variables</td>
+          <td>Attributes (instance/static)</td>
+        </tr>
+        <tr>
+          <td>Top-Down approach</td>
+          <td>Object-based modeling</td>
+        </tr>
+        <tr>
+          <td>Sulit reuse</td>
+          <td>Mudah reuse &amp; extend</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 2 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 02</div>
+      <h2>Class & Object</h2>
+    </div>
+
+    <div class="analogy">
+      <div class="label">Analogi</div>
+      <p><strong>Class</strong> = "Mobil" (desain di kertas / blueprint)</p>
+      <p><strong>Object</strong> = "Avanza merah B 1234 CD" (mobil nyata di jalan)</p>
+    </div>
+
+    <h3>Struktur Class di ABAP</h3>
+
+    <pre><span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CLASS DEFINITION (Deklarasi — apa yang dimiliki class)</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_vehicle <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="comment">" Attributes (data)</span>
+    <span class="keyword">DATA</span>: mv_brand  <span class="type">TYPE string</span>,
+          mv_color  <span class="type">TYPE string</span>,
+          mv_speed  <span class="type">TYPE i</span>.
+
+    <span class="comment">" Methods (behavior)</span>
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_brand <span class="type">TYPE string</span>
+                         iv_color <span class="type">TYPE string</span>,
+             accelerate
+               <span class="keyword">IMPORTING</span> iv_increment <span class="type">TYPE i</span>,
+             get_info
+               <span class="keyword">RETURNING VALUE</span>(rv_info) <span class="type">TYPE string</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CLASS IMPLEMENTATION (Realisasi — bagaimana cara kerjanya)</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_vehicle <span class="keyword">IMPLEMENTATION</span>.
+
+  <span class="keyword">METHOD</span> constructor.
+    mv_brand = iv_brand.
+    mv_color = iv_color.
+    mv_speed = <span class="number">0</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> accelerate.
+    mv_speed = mv_speed + iv_increment.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_info.
+    rv_info = <span class="string">|{ mv_brand } { mv_color } - Kecepatan: { mv_speed } km/jam|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* PROGRAM UTAMA — Membuat Object</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+
+  <span class="comment">" Membuat instance (object) dari class</span>
+  <span class="keyword">DATA</span>(lo_car1) = <span class="keyword">NEW</span> lcl_vehicle( iv_brand = <span class="string">'Toyota'</span>
+                                     iv_color = <span class="string">'Merah'</span> ).
+
+  <span class="keyword">DATA</span>(lo_car2) = <span class="keyword">NEW</span> lcl_vehicle( iv_brand = <span class="string">'Honda'</span>
+                                     iv_color = <span class="string">'Hitam'</span> ).
+
+  <span class="comment">" Memanggil method</span>
+  lo_car1->accelerate( <span class="number">60</span> ).
+  lo_car1->accelerate( <span class="number">40</span> ).
+  lo_car2->accelerate( <span class="number">80</span> ).
+
+  <span class="keyword">WRITE</span>: / lo_car1->get_info( ).
+  <span class="comment">" Output: Toyota Merah - Kecepatan: 100 km/jam</span>
+
+  <span class="keyword">WRITE</span>: / lo_car2->get_info( ).
+  <span class="comment">" Output: Honda Hitam - Kecepatan: 80 km/jam</span></pre>
+
+    <h3>Penjelasan Syntax</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Syntax</th>
+          <th>Penjelasan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>CLASS ... DEFINITION</code></td>
+          <td>Deklarasi class (header)</td>
+        </tr>
+        <tr>
+          <td><code>CLASS ... IMPLEMENTATION</code></td>
+          <td>Implementasi method (body)</td>
+        </tr>
+        <tr>
+          <td><code>DATA:</code></td>
+          <td>Instance attribute (tiap objek punya sendiri)</td>
+        </tr>
+        <tr>
+          <td><code>CLASS-DATA:</code></td>
+          <td>Static attribute (satu untuk semua objek)</td>
+        </tr>
+        <tr>
+          <td><code>METHODS:</code></td>
+          <td>Deklarasi method</td>
+        </tr>
+        <tr>
+          <td><code>CONSTRUCTOR</code></td>
+          <td>Method khusus yang otomatis dipanggil saat object dibuat</td>
+        </tr>
+        <tr>
+          <td><code>NEW lcl_class( )</code></td>
+          <td>Membuat instance baru (ABAP 7.40+)</td>
+        </tr>
+        <tr>
+          <td><code>-></code></td>
+          <td>Operator untuk akses member dari instance</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 3 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 03</div>
+      <h2>Visibility (Access Modifiers)</h2>
+    </div>
+
+    <p>ABAP memiliki <strong>3 level visibility</strong> yang menentukan dari mana suatu attribute atau method bisa diakses:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Akses</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>PUBLIC SECTION</code></td>
+          <td>Bisa diakses dari <strong>manapun</strong></td>
+        </tr>
+        <tr>
+          <td><code>PROTECTED SECTION</code></td>
+          <td>Bisa diakses dari class ini &amp; <strong>class turunannya</strong></td>
+        </tr>
+        <tr>
+          <td><code>PRIVATE SECTION</code></td>
+          <td>Hanya bisa diakses dari <strong>dalam class itu sendiri</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Contoh</h3>
+
+    <pre><span class="keyword">CLASS</span> lcl_employee <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_name   <span class="type">TYPE string</span>
+                         iv_salary <span class="type">TYPE p</span>,
+             get_display_info
+               <span class="keyword">RETURNING VALUE</span>(rv_info) <span class="type">TYPE string</span>.
+
+  <span class="keyword">PROTECTED SECTION</span>.
+    <span class="keyword">DATA</span>: mv_department <span class="type">TYPE string</span>.
+    <span class="comment">" ↑ Hanya class turunan yang bisa akses</span>
+
+  <span class="keyword">PRIVATE SECTION</span>.
+    <span class="keyword">DATA</span>: mv_name   <span class="type">TYPE string</span>,
+          mv_salary <span class="type">TYPE p</span>.
+    <span class="comment">" ↑ Tidak bisa diakses dari luar class</span>
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_employee <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_name   = iv_name.
+    mv_salary = iv_salary.
+    mv_department = <span class="string">'General'</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_display_info.
+    rv_info = <span class="string">|{ mv_name } - Dept: { mv_department } - Gaji: { mv_salary }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="keyword">DATA</span>(lo_emp) = <span class="keyword">NEW</span> lcl_employee(
+    iv_name = <span class="string">'Budi'</span> iv_salary = <span class="number">5000000</span> ).
+
+  <span class="keyword">WRITE</span>: / lo_emp->get_display_info( ).
+
+  <span class="comment">" lo_emp->mv_name = 'Andi'.       " ❌ COMPILE ERROR — PRIVATE</span>
+  <span class="comment">" lo_emp->mv_salary = 6000000.    " ❌ COMPILE ERROR — PRIVATE</span>
+  <span class="comment">" lo_emp->mv_department = 'IT'.   " ❌ COMPILE ERROR — PROTECTED</span></pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 4 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 04</div>
+      <h2>Constructor</h2>
+    </div>
+
+    <h3>Instance Constructor</h3>
+    <p>Dipanggil <strong>otomatis</strong> saat object dibuat dengan <code>NEW</code> atau <code>CREATE OBJECT</code>.</p>
+
+    <pre><span class="keyword">CLASS</span> lcl_product <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_name  <span class="type">TYPE string</span>,
+          mv_price <span class="type">TYPE p LENGTH 8 DECIMALS 2</span>.
+
+    <span class="keyword">METHODS</span> constructor
+      <span class="keyword">IMPORTING</span> iv_name  <span class="type">TYPE string</span>
+                iv_price <span class="type">TYPE p</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_product <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_name  = iv_name.
+    mv_price = iv_price.
+    <span class="keyword">WRITE</span>: / <span class="string">|Product "{ mv_name }" dibuat dengan harga { mv_price }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="comment">" Constructor langsung dipanggil saat NEW</span>
+  <span class="keyword">DATA</span>(lo_prod) = <span class="keyword">NEW</span> lcl_product(
+    iv_name = <span class="string">'Laptop'</span> iv_price = <span class="number">15000000</span> ).
+  <span class="comment">" Output: Product "Laptop" dibuat dengan harga 15000000</span></pre>
+
+    <h3>Static Constructor (CLASS_CONSTRUCTOR)</h3>
+    <p>Dipanggil <strong>hanya sekali</strong> otomatis saat class pertama kali diakses dalam program.</p>
+
+    <pre><span class="keyword">CLASS</span> lcl_config <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">CLASS-DATA</span>: gv_system_name <span class="type">TYPE string</span>.
+    <span class="keyword">CLASS-METHODS</span>: class_constructor.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_config <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> class_constructor.
+    gv_system_name = <span class="string">'SAP Production System'</span>.
+    <span class="keyword">WRITE</span>: / <span class="string">'Static constructor dipanggil — hanya sekali!'</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="comment">" Pertama kali akses → class_constructor otomatis jalan</span>
+  <span class="keyword">WRITE</span>: / lcl_config=>gv_system_name.
+
+  <span class="comment">" Kedua kali → class_constructor TIDAK dipanggil lagi</span>
+  <span class="keyword">WRITE</span>: / lcl_config=>gv_system_name.</pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 5 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 05</div>
+      <h2>Static vs Instance Members</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Instance Member</th>
+          <th>Static Member</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dimiliki per <strong>OBJECT</strong></td>
+          <td>Dimiliki oleh <strong>CLASS</strong> (satu untuk semua)</td>
+        </tr>
+        <tr>
+          <td><code>DATA:</code> / <code>METHODS:</code></td>
+          <td><code>CLASS-DATA:</code> / <code>CLASS-METHODS:</code></td>
+        </tr>
+        <tr>
+          <td>Akses: <code>lo_obj->member</code></td>
+          <td>Akses: <code>lcl_class=>member</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Contoh</h3>
+
+    <pre><span class="keyword">CLASS</span> lcl_counter <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="comment">" Instance — tiap object punya counter sendiri</span>
+    <span class="keyword">DATA</span>: mv_count <span class="type">TYPE i</span>.
+
+    <span class="comment">" Static — semua object share total</span>
+    <span class="keyword">CLASS-DATA</span>: gv_total_objects <span class="type">TYPE i</span>.
+
+    <span class="keyword">METHODS</span>: constructor, increment.
+    <span class="keyword">CLASS-METHODS</span>: get_total_objects
+                    <span class="keyword">RETURNING VALUE</span>(rv_total) <span class="type">TYPE i</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_counter <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_count = <span class="number">0</span>.
+    gv_total_objects = gv_total_objects + <span class="number">1</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> increment.
+    mv_count = mv_count + <span class="number">1</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_total_objects.
+    rv_total = gv_total_objects.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="keyword">DATA</span>(lo_c1) = <span class="keyword">NEW</span> lcl_counter( ).
+  <span class="keyword">DATA</span>(lo_c2) = <span class="keyword">NEW</span> lcl_counter( ).
+  <span class="keyword">DATA</span>(lo_c3) = <span class="keyword">NEW</span> lcl_counter( ).
+
+  lo_c1->increment( ). lo_c1->increment( ).
+  lo_c2->increment( ).
+
+  <span class="keyword">WRITE</span>: / <span class="string">|Counter 1: { lo_c1->mv_count }|</span>.    <span class="comment">" 2</span>
+  <span class="keyword">WRITE</span>: / <span class="string">|Counter 2: { lo_c2->mv_count }|</span>.    <span class="comment">" 1</span>
+  <span class="keyword">WRITE</span>: / <span class="string">|Counter 3: { lo_c3->mv_count }|</span>.    <span class="comment">" 0</span>
+
+  <span class="comment">" Static — akses via class name (=>)</span>
+  <span class="keyword">WRITE</span>: / <span class="string">|Total objects: { lcl_counter=>get_total_objects( ) }|</span>.
+  <span class="comment">" Output: 3</span></pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 6 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 06</div>
+      <h2>Inheritance (Pewarisan)</h2>
+    </div>
+
+    <div class="diagram diagram-left">
+         ┌──────────────┐
+         │  lcl_vehicle  │  ← Parent / Superclass
+         └──────┬───────┘
+                │  INHERITS FROM
+        ┌───────┴────────┐
+        │                │
+ ┌──────┴─────┐  ┌──────┴────────┐
+ │  lcl_car   │  │ lcl_motorcycle│  ← Child / Subclass
+ └────────────┘  └───────────────┘</div>
+
+    <h3>Contoh Lengkap</h3>
+
+    <pre><span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* PARENT CLASS</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_vehicle <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_brand <span class="type">TYPE string</span>,
+          mv_speed <span class="type">TYPE i</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_brand <span class="type">TYPE string</span>,
+             accelerate  <span class="keyword">IMPORTING</span> iv_increment <span class="type">TYPE i</span>,
+             brake,
+             get_status  <span class="keyword">RETURNING VALUE</span>(rv_status) <span class="type">TYPE string</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_vehicle <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_brand = iv_brand. mv_speed = <span class="number">0</span>.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> accelerate.
+    mv_speed = mv_speed + iv_increment.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> brake.
+    mv_speed = <span class="number">0</span>.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> get_status.
+    rv_status = <span class="string">|{ mv_brand } — { mv_speed } km/jam|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD CLASS — Car (dengan REDEFINITION)</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_car <span class="keyword">DEFINITION INHERITING FROM</span> lcl_vehicle.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_num_doors <span class="type">TYPE i</span>.
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_brand     <span class="type">TYPE string</span>
+                         iv_num_doors <span class="type">TYPE i</span>,
+             get_status <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_car <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( iv_brand ).  <span class="comment">" ← Panggil parent</span>
+    mv_num_doors = iv_num_doors.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_status.  <span class="comment">" ← Override parent method</span>
+    rv_status = <span class="string">|{ mv_brand } ({ mv_num_doors } pintu) — { mv_speed } km/jam|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* MAIN PROGRAM</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="keyword">DATA</span>(lo_car) = <span class="keyword">NEW</span> lcl_car(
+    iv_brand = <span class="string">'Toyota'</span> iv_num_doors = <span class="number">4</span> ).
+
+  lo_car->accelerate( <span class="number">120</span> ).       <span class="comment">" ← Method warisan dari parent</span>
+  <span class="keyword">WRITE</span>: / lo_car->get_status( ).  <span class="comment">" ← Versi override (child)</span>
+  <span class="comment">" Output: Toyota (4 pintu) — 120 km/jam</span>
+
+  lo_car->brake( ).                 <span class="comment">" ← Method warisan dari parent</span>
+  <span class="keyword">WRITE</span>: / lo_car->get_status( ).
+  <span class="comment">" Output: Toyota (4 pintu) — 0 km/jam</span></pre>
+
+    <h3>Keyword Penting Inheritance</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>Fungsi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>INHERITS FROM</code></td>
+          <td>Menentukan parent class</td>
+        </tr>
+        <tr>
+          <td><code>super-></code></td>
+          <td>Memanggil method / constructor parent</td>
+        </tr>
+        <tr>
+          <td><code>REDEFINITION</code></td>
+          <td>Override method parent di child class</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 7 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 07</div>
+      <h2>Polymorphism</h2>
+    </div>
+
+    <p><strong>Polymorphism</strong> = satu nama method, <strong>banyak perilaku</strong> berbeda tergantung object-nya. Kompiler akan memanggil versi method yang sesuai dengan tipe object sebenarnya.</p>
+
+    <h3>Contoh: Sistem Hitung Luas Bangun Datar</h3>
+
+    <pre><span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* PARENT — Shape</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_shape <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_name <span class="type">TYPE string</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_name <span class="type">TYPE string</span>,
+             get_area    <span class="keyword">RETURNING VALUE</span>(rv_area) <span class="type">TYPE f</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_shape <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor. mv_name = iv_name. <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> get_area. rv_area = <span class="number">0</span>. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD — Circle</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_circle <span class="keyword">DEFINITION INHERITING FROM</span> lcl_shape.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_radius <span class="type">TYPE f</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_radius <span class="type">TYPE f</span>,
+             get_area <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_circle <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( <span class="string">'Lingkaran'</span> ). mv_radius = iv_radius.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> get_area.
+    rv_area = <span class="string">'3.14159'</span> * mv_radius * mv_radius.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD — Rectangle</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_rectangle <span class="keyword">DEFINITION INHERITING FROM</span> lcl_shape.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_width <span class="type">TYPE f</span>, mv_height <span class="type">TYPE f</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_width <span class="type">TYPE f</span> iv_height <span class="type">TYPE f</span>,
+             get_area <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_rectangle <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( <span class="string">'Persegi Panjang'</span> ).
+    mv_width = iv_width. mv_height = iv_height.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> get_area. rv_area = mv_width * mv_height. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* MAIN — Polymorphism in action!</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+
+  <span class="comment">" Tipe: REF TO lcl_shape (parent)</span>
+  <span class="comment">" Isi  : berbagai child object</span>
+  <span class="keyword">DATA</span>: lt_shapes <span class="type">TYPE TABLE OF REF TO</span> lcl_shape.
+
+  <span class="keyword">APPEND NEW</span> lcl_circle( <span class="string">'7.0'</span> ) TO lt_shapes.
+  <span class="keyword">APPEND NEW</span> lcl_rectangle(
+    iv_width = <span class="string">'5.0'</span> iv_height = <span class="string">'3.0'</span> ) TO lt_shapes.
+
+  <span class="comment">" Satu loop, satu method name → hasil BERBEDA</span>
+  <span class="keyword">LOOP AT</span> lt_shapes <span class="keyword">INTO DATA</span>(lo_shape).
+    <span class="keyword">WRITE</span>: / <span class="string">|{ lo_shape->mv_name }: </span>
+            <span class="string">Luas = { lo_shape->get_area( ) DECIMALS = 2 }|</span>.
+  <span class="keyword">ENDLOOP</span>.
+  <span class="comment">" Output:</span>
+  <span class="comment">" Lingkaran: Luas = 153.94</span>
+  <span class="comment">" Persegi Panjang: Luas = 15.00</span></pre>
+
+    <div class="info-box">
+      <div class="label">Key Insight</div>
+      <p>Kompiler memanggil <code>get_area()</code> milik <strong>masing-masing child class</strong>, bukan parent. Inilah yang disebut <strong>polymorphism</strong> — satu nama method, banyak implementasi.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 8 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 08</div>
+      <h2>Interface</h2>
+    </div>
+
+    <p>Interface mendefinisikan <strong>kontrak</strong> — semua class yang mengimplementasikannya <strong>wajib</strong> menyediakan method-method yang didefinisikan di interface.</p>
+
+    <div class="diagram diagram-left">
+┌─────────────┐
+│ lif_printable│  ← Interface (kontrak)
+│ + print()   │
+└──────┬──────┘
+       │ IMPLEMENTS
+  ┌────┴──────────────┐
+  │                   │
+┌─┴───────────┐  ┌───┴──────────┐
+│ lcl_invoice │  │ lcl_report   │  ← Wajib implement print()
+└─────────────┘  └──────────────┘</div>
+
+    <h3>Contoh</h3>
+
+    <pre><span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* INTERFACE DEFINITION</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">INTERFACE</span> lif_printable.
+  <span class="keyword">METHODS</span>: print <span class="keyword">RETURNING VALUE</span>(rv_output) <span class="type">TYPE string</span>.
+<span class="keyword">ENDINTERFACE</span>.
+
+<span class="keyword">INTERFACE</span> lif_emailable.
+  <span class="keyword">METHODS</span>: send_email <span class="keyword">IMPORTING</span> iv_to <span class="type">TYPE string</span>
+                      <span class="keyword">RETURNING VALUE</span>(rv_success) <span class="type">TYPE abap_bool</span>.
+<span class="keyword">ENDINTERFACE</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CLASS: Invoice — implements BOTH interfaces</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_invoice <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">INTERFACES</span>: lif_printable, lif_emailable.
+    <span class="keyword">DATA</span>: mv_invoice_no <span class="type">TYPE string</span>,
+          mv_amount     <span class="type">TYPE p LENGTH 10 DECIMALS 2</span>.
+    <span class="keyword">METHODS</span> constructor
+      <span class="keyword">IMPORTING</span> iv_invoice_no <span class="type">TYPE string</span>
+                iv_amount     <span class="type">TYPE p</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_invoice <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_invoice_no = iv_invoice_no.
+    mv_amount     = iv_amount.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> lif_printable~print.
+    rv_output = <span class="string">|Invoice #{ mv_invoice_no }: Rp { mv_amount }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> lif_emailable~send_email.
+    rv_success = abap_true.
+    <span class="keyword">WRITE</span>: / <span class="string">|Invoice #{ mv_invoice_no } dikirim ke { iv_to }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* MAIN — Polymorphism via interface type</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+
+  <span class="keyword">DATA</span>: lt_printables <span class="type">TYPE TABLE OF REF TO</span> lif_printable.
+
+  <span class="keyword">APPEND NEW</span> lcl_invoice(
+    iv_invoice_no = <span class="string">'INV-001'</span>
+    iv_amount = <span class="number">1500000</span> ) TO lt_printables.
+
+  <span class="keyword">LOOP AT</span> lt_printables <span class="keyword">INTO DATA</span>(lo_p).
+    <span class="keyword">WRITE</span>: / lo_p->print( ).
+  <span class="keyword">ENDLOOP</span>.
+  <span class="comment">" Output: Invoice #INV-001: Rp 1500000.00</span>
+
+  <span class="comment">" Akses method interface spesifik</span>
+  <span class="keyword">DATA</span>(lo_inv) = <span class="keyword">NEW</span> lcl_invoice(
+    iv_invoice_no = <span class="string">'INV-002'</span> iv_amount = <span class="number">2500000</span> ).
+  lo_inv->lif_emailable~send_email( <span class="string">'mgr@company.com'</span> ).</pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 9 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 09</div>
+      <h2>Abstract Class & Method</h2>
+    </div>
+
+    <ul>
+      <li><strong>Abstract class</strong>: Tidak bisa dibuat object-nya langsung, hanya bisa di-inherit.</li>
+      <li><strong>Abstract method</strong>: Tidak punya implementasi di parent — child <strong>wajib</strong> mengimplementasikannya.</li>
+    </ul>
+
+    <pre><span class="keyword">CLASS</span> lcl_shape <span class="keyword">DEFINITION ABSTRACT</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_name <span class="type">TYPE string</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_name <span class="type">TYPE string</span>,
+             get_area <span class="keyword">ABSTRACT</span>
+               <span class="keyword">RETURNING VALUE</span>(rv_area) <span class="type">TYPE f</span>,
+             describe <span class="keyword">RETURNING VALUE</span>(rv_desc) <span class="type">TYPE string</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_shape <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor. mv_name = iv_name. <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> describe.
+    rv_desc = <span class="string">|{ mv_name } memiliki luas { get_area( ) DECIMALS = 2 }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD: wajib implement get_area()</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_square <span class="keyword">DEFINITION INHERITING FROM</span> lcl_shape.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_side <span class="type">TYPE f</span>.
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_side <span class="type">TYPE f</span>,
+             get_area <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_square <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( <span class="string">'Persegi'</span> ). mv_side = iv_side.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> get_area. rv_area = mv_side * mv_side. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="comment">" DATA(lo) = NEW lcl_shape( ).  " ❌ ERROR — abstract</span>
+  <span class="keyword">DATA</span>(lo_sq) = <span class="keyword">NEW</span> lcl_square( <span class="string">'5.0'</span> ).
+  <span class="keyword">WRITE</span>: / lo_sq->describe( ).
+  <span class="comment">" Output: Persegi memiliki luas 25.00</span></pre>
+
+    <div class="warn-box">
+      <div class="label">Perhatian</div>
+      <p>Jika child class tidak mengimplementasikan method abstract, akan terjadi <strong>compile error</strong>. Ini memastikan semua subclass memiliki perilaku minimum yang dibutuhkan.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 10 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 10</div>
+      <h2>Events</h2>
+    </div>
+
+    <p>Event memungkinkan satu class <strong>memberi tahu</strong> class lain bahwa sesuatu telah terjadi, tanpa perlu tahu siapa yang mendengarkan. Ini disebut <strong>publisher-subscriber pattern</strong>.</p>
+
+    <pre><span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* PUBLISHER — Yang mengirim event</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_order <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_order_id <span class="type">TYPE string</span>,
+          mv_status   <span class="type">TYPE string</span>.
+
+    <span class="comment">" Deklarasi event</span>
+    <span class="keyword">EVENTS</span>: order_created
+              <span class="keyword">EXPORTING VALUE</span>(ev_order_id) <span class="type">TYPE string</span>,
+              order_completed
+              <span class="keyword">EXPORTING VALUE</span>(ev_order_id) <span class="type">TYPE string</span>.
+
+    <span class="keyword">METHODS</span>: constructor <span class="keyword">IMPORTING</span> iv_order_id <span class="type">TYPE string</span>,
+             process_order.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_order <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_order_id = iv_order_id.
+    mv_status   = <span class="string">'New'</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> process_order.
+    mv_status = <span class="string">'Processing'</span>.
+    <span class="keyword">WRITE</span>: / <span class="string">|Order { mv_order_id } sedang diproses...|</span>.
+
+    <span class="comment">" RAISE EVENT — kirim sinyal ke semua listener</span>
+    <span class="keyword">RAISE EVENT</span> order_created
+      <span class="keyword">EXPORTING</span> ev_order_id = mv_order_id.
+
+    mv_status = <span class="string">'Completed'</span>.
+    <span class="keyword">RAISE EVENT</span> order_completed
+      <span class="keyword">EXPORTING</span> ev_order_id = mv_order_id.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* SUBSCRIBER — Yang mendengarkan event</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_notifier <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>:
+      on_created <span class="keyword">FOR EVENT</span> order_created <span class="keyword">OF</span> lcl_order
+        <span class="keyword">IMPORTING</span> ev_order_id,
+      on_completed <span class="keyword">FOR EVENT</span> order_completed <span class="keyword">OF</span> lcl_order
+        <span class="keyword">IMPORTING</span> ev_order_id.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_notifier <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> on_created.
+    <span class="keyword">WRITE</span>: / <span class="string">|NOTIF: Order { ev_order_id } telah dibuat!|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+  <span class="keyword">METHOD</span> on_completed.
+    <span class="keyword">WRITE</span>: / <span class="string">|NOTIF: Order { ev_order_id } telah selesai!|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* MAIN PROGRAM</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+
+  <span class="keyword">DATA</span>(lo_order)   = <span class="keyword">NEW</span> lcl_order( <span class="string">'ORD-001'</span> ).
+  <span class="keyword">DATA</span>(lo_notifier) = <span class="keyword">NEW</span> lcl_notifier( ).
+
+  <span class="comment">" HUBUNGKAN event ke handler (register)</span>
+  <span class="keyword">SET HANDLER</span> lo_notifier->on_created   <span class="keyword">FOR</span> lo_order.
+  <span class="keyword">SET HANDLER</span> lo_notifier->on_completed <span class="keyword">FOR</span> lo_order.
+
+  <span class="comment">" Proses — event otomatis ter-trigger</span>
+  lo_order->process_order( ).
+
+<span class="comment">" Output:</span>
+<span class="comment">" Order ORD-001 sedang diproses...</span>
+<span class="comment">" NOTIF: Order ORD-001 telah dibuat!</span>
+<span class="comment">" NOTIF: Order ORD-001 telah selesai!</span></pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 11 -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 11</div>
+      <h2>Friend Class & Singleton Pattern</h2>
+    </div>
+
+    <h3>Friend Class</h3>
+    <p>Ketika class A ingin memberikan akses <code>PRIVATE</code> ke class B:</p>
+
+    <pre><span class="keyword">CLASS</span> lcl_bank_vault <span class="keyword">DEFINITION FRIENDS</span> lcl_bank_manager.
+  <span class="keyword">PRIVATE SECTION</span>.
+    <span class="keyword">DATA</span>: mv_balance <span class="type">TYPE p LENGTH 12 DECIMALS 2</span> VALUE <span class="number">1000000000</span>.
+    <span class="keyword">METHODS</span>: get_balance <span class="keyword">RETURNING VALUE</span>(rv_bal) <span class="type">TYPE p</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_bank_vault <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> get_balance. rv_bal = mv_balance. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_bank_manager <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>: check_vault <span class="keyword">RETURNING VALUE</span>(rv_info) <span class="type">TYPE string</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_bank_manager <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> check_vault.
+    <span class="keyword">DATA</span>(lo_vault) = <span class="keyword">NEW</span> lcl_bank_vault( ).
+    <span class="comment">" Karena FRIENDS, bisa akses private member:</span>
+    rv_info = <span class="string">|Vault: Rp { lo_vault->get_balance( ) }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.</pre>
+
+    <h3>Singleton Pattern</h3>
+    <p>Memastikan hanya <strong>satu instance</strong> yang pernah dibuat:</p>
+
+    <pre><span class="keyword">CLASS</span> lcl_db_connection <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">CLASS-METHODS</span>: get_instance
+      <span class="keyword">RETURNING VALUE</span>(ro_instance)
+        <span class="type">TYPE REF TO</span> lcl_db_connection.
+    <span class="keyword">METHODS</span>: query <span class="keyword">IMPORTING</span> iv_sql <span class="type">TYPE string</span>
+                   <span class="keyword">RETURNING VALUE</span>(rv_result) <span class="type">TYPE string</span>.
+  <span class="keyword">PRIVATE SECTION</span>.
+    <span class="keyword">CLASS-DATA</span>: go_instance <span class="type">TYPE REF TO</span> lcl_db_connection.
+    <span class="keyword">DATA</span>: mv_connection_id <span class="type">TYPE string</span>.
+    <span class="keyword">METHODS</span>: constructor.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_db_connection <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_connection_id = <span class="string">'CONN-'</span> && sy-uzeit.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_instance.
+    <span class="keyword">IF</span> go_instance <span class="keyword">IS NOT BOUND</span>.
+      go_instance = <span class="keyword">NEW</span> #( ).
+    <span class="keyword">ENDIF</span>.
+    ro_instance = go_instance.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> query.
+    rv_result = <span class="string">|Result of "{ iv_sql }" via { mv_connection_id }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">START-OF-SELECTION</span>.
+  <span class="comment">" Semua variable menunjuk ke instance YANG SAMA</span>
+  <span class="keyword">DATA</span>(lo_db1) = lcl_db_connection=>get_instance( ).
+  <span class="keyword">DATA</span>(lo_db2) = lcl_db_connection=>get_instance( ).
+
+  <span class="keyword">WRITE</span>: / lo_db1->query( <span class="string">'SELECT * FROM MARA'</span> ).
+  <span class="keyword">WRITE</span>: / lo_db2->query( <span class="string">'SELECT * FROM VBAK'</span> ).
+  <span class="comment">" Keduanya pakai connection_id yang SAMA</span></pre>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- BAB 12: CASE STUDY -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="chapter-header page-break">
+      <div class="chapter-number">Bab 12</div>
+      <h2>Studi Kasus: Sistem Manajemen Karyawan</h2>
+    </div>
+
+    <div class="info-box">
+      <div class="label">Requirement</div>
+      <p>Ada 3 jenis karyawan (Permanent, Contract, Intern) dengan perhitungan gaji berbeda. Sistem harus bisa mencetak payslip, menghitung total payroll, dan mencatat audit. Semua konsep OOP digunakan.</p>
+    </div>
+
+    <pre><span class="comment">*&---------------------------------------------------------------------*</span>
+<span class="comment">*& Case Study: HR Management System — OOP ABAP</span>
+<span class="comment">*&---------------------------------------------------------------------*</span>
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* INTERFACES</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">INTERFACE</span> lif_payable.
+  <span class="keyword">METHODS</span>: calculate_salary <span class="keyword">RETURNING VALUE</span>(rv_salary) <span class="type">TYPE p</span>,
+           get_payslip      <span class="keyword">RETURNING VALUE</span>(rv_slip) <span class="type">TYPE string</span>.
+<span class="keyword">ENDINTERFACE</span>.
+
+<span class="keyword">INTERFACE</span> lif_reportable.
+  <span class="keyword">METHODS</span>: generate_report <span class="keyword">RETURNING VALUE</span>(rv_report) <span class="type">TYPE string</span>.
+<span class="keyword">ENDINTERFACE</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* ABSTRACT BASE CLASS</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_employee <span class="keyword">DEFINITION ABSTRACT</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">INTERFACES</span>: lif_payable, lif_reportable.
+
+    <span class="keyword">ALIASES</span>: calculate_salary <span class="keyword">FOR</span> lif_payable~calculate_salary,
+             get_payslip      <span class="keyword">FOR</span> lif_payable~get_payslip,
+             generate_report  <span class="keyword">FOR</span> lif_reportable~generate_report.
+
+    <span class="keyword">CLASS-DATA</span>: gv_total_employees <span class="type">TYPE i</span>,
+                gv_total_payroll   <span class="type">TYPE p LENGTH 12 DECIMALS 2</span>.
+
+    <span class="keyword">DATA</span>: mv_emp_id   <span class="type">TYPE string</span>,
+          mv_name     <span class="type">TYPE string</span>,
+          mv_base_pay <span class="type">TYPE p LENGTH 10 DECIMALS 2</span>.
+
+    <span class="keyword">EVENTS</span>: salary_calculated
+              <span class="keyword">EXPORTING VALUE</span>(ev_emp_id) <span class="type">TYPE string</span>
+                        <span class="keyword">VALUE</span>(ev_amount) <span class="type">TYPE p</span>.
+
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_emp_id   <span class="type">TYPE string</span>
+                         iv_name     <span class="type">TYPE string</span>
+                         iv_base_pay <span class="type">TYPE p</span>,
+             calculate_salary <span class="keyword">ABSTRACT RETURNING VALUE</span>(rv_salary) <span class="type">TYPE p</span>,
+             get_payslip     <span class="keyword">REDEFINITION</span>,
+             generate_report <span class="keyword">REDEFINITION</span>.
+
+  <span class="keyword">PROTECTED SECTION</span>.
+    <span class="keyword">METHODS</span>: get_employee_type <span class="keyword">RETURNING VALUE</span>(rv_type) <span class="type">TYPE string</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_employee <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    mv_emp_id = iv_emp_id.
+    mv_name   = iv_name.
+    mv_base_pay = iv_base_pay.
+    gv_total_employees = gv_total_employees + <span class="number">1</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_payslip.
+    <span class="keyword">DATA</span>(lv_salary) = calculate_salary( ).
+    rv_slip = <span class="string">|══════════════════════════════\n|</span> &&
+              <span class="string">|  PAYSLIP — { get_employee_type( ) }\n|</span> &&
+              <span class="string">|══════════════════════════════\n|</span> &&
+              <span class="string">|  ID    : { mv_emp_id }\n|</span> &&
+              <span class="string">|  Nama  : { mv_name }\n|</span> &&
+              <span class="string">|  Gaji  : Rp { lv_salary }\n|</span> &&
+              <span class="string">|══════════════════════════════|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> generate_report.
+    rv_report = <span class="string">|{ mv_emp_id } | { mv_name } | </span>
+                <span class="string">{ get_employee_type( ) } | Rp { calculate_salary( ) }|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_employee_type. rv_type = <span class="string">'Employee'</span>. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD 1: Permanent — bonus 10%</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_permanent <span class="keyword">DEFINITION INHERITING FROM</span> lcl_employee.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">DATA</span>: mv_bonus_pct <span class="type">TYPE p LENGTH 4 DECIMALS 2</span>.
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_emp_id   <span class="type">TYPE string</span>
+                         iv_name     <span class="type">TYPE string</span>
+                         iv_base_pay <span class="type">TYPE p</span>
+                         iv_bonus    <span class="type">TYPE p DEFAULT '0.10'</span>,
+             calculate_salary <span class="keyword">REDEFINITION</span>.
+  <span class="keyword">PROTECTED SECTION</span>.
+    <span class="keyword">METHODS</span>: get_employee_type <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_permanent <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( iv_emp_id = iv_emp_id
+                        iv_name = iv_name
+                        iv_base_pay = iv_base_pay ).
+    mv_bonus_pct = iv_bonus.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> calculate_salary.
+    rv_salary = mv_base_pay + ( mv_base_pay * mv_bonus_pct ).
+    gv_total_payroll = gv_total_payroll + rv_salary.
+    <span class="keyword">RAISE EVENT</span> salary_calculated
+      <span class="keyword">EXPORTING</span> ev_emp_id = mv_emp_id ev_amount = rv_salary.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_employee_type. rv_type = <span class="string">'Permanent'</span>. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD 2: Contract — gaji flat</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_contract <span class="keyword">DEFINITION INHERITING FROM</span> lcl_employee.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_emp_id   <span class="type">TYPE string</span>
+                         iv_name     <span class="type">TYPE string</span>
+                         iv_base_pay <span class="type">TYPE p</span>,
+             calculate_salary <span class="keyword">REDEFINITION</span>.
+  <span class="keyword">PROTECTED SECTION</span>.
+    <span class="keyword">METHODS</span>: get_employee_type <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_contract <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( iv_emp_id = iv_emp_id
+                        iv_name = iv_name
+                        iv_base_pay = iv_base_pay ).
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> calculate_salary.
+    rv_salary = mv_base_pay.
+    gv_total_payroll = gv_total_payroll + rv_salary.
+    <span class="keyword">RAISE EVENT</span> salary_calculated
+      <span class="keyword">EXPORTING</span> ev_emp_id = mv_emp_id ev_amount = rv_salary.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_employee_type. rv_type = <span class="string">'Contract'</span>. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* CHILD 3: Intern — allowance 40%</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_intern <span class="keyword">DEFINITION INHERITING FROM</span> lcl_employee.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>: constructor
+               <span class="keyword">IMPORTING</span> iv_emp_id   <span class="type">TYPE string</span>
+                         iv_name     <span class="type">TYPE string</span>
+                         iv_base_pay <span class="type">TYPE p</span>,
+             calculate_salary <span class="keyword">REDEFINITION</span>.
+  <span class="keyword">PROTECTED SECTION</span>.
+    <span class="keyword">METHODS</span>: get_employee_type <span class="keyword">REDEFINITION</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_intern <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> constructor.
+    <span class="keyword">super</span>->constructor( iv_emp_id = iv_emp_id
+                        iv_name = iv_name
+                        iv_base_pay = iv_base_pay ).
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> calculate_salary.
+    rv_salary = mv_base_pay * <span class="string">'0.40'</span>.
+    gv_total_payroll = gv_total_payroll + rv_salary.
+    <span class="keyword">RAISE EVENT</span> salary_calculated
+      <span class="keyword">EXPORTING</span> ev_emp_id = mv_emp_id ev_amount = rv_salary.
+  <span class="keyword">ENDMETHOD</span>.
+
+  <span class="keyword">METHOD</span> get_employee_type. rv_type = <span class="string">'Intern'</span>. <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* EVENT HANDLER: Audit Logger</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">CLASS</span> lcl_audit_logger <span class="keyword">DEFINITION</span>.
+  <span class="keyword">PUBLIC SECTION</span>.
+    <span class="keyword">METHODS</span>: on_salary_calculated
+               <span class="keyword">FOR EVENT</span> salary_calculated <span class="keyword">OF</span> lcl_employee
+               <span class="keyword">IMPORTING</span> ev_emp_id ev_amount.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="keyword">CLASS</span> lcl_audit_logger <span class="keyword">IMPLEMENTATION</span>.
+  <span class="keyword">METHOD</span> on_salary_calculated.
+    <span class="keyword">WRITE</span>: / <span class="string">|AUDIT: Gaji { ev_emp_id } = Rp { ev_amount } dicatat.|</span>.
+  <span class="keyword">ENDMETHOD</span>.
+<span class="keyword">ENDCLASS</span>.
+
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="comment">* MAIN PROGRAM</span>
+<span class="comment">*----------------------------------------------------------------------*</span>
+<span class="keyword">START-OF-SELECTION</span>.
+
+  lcl_employee=>gv_total_employees = <span class="number">0</span>.
+  lcl_employee=>gv_total_payroll   = <span class="number">0</span>.
+
+  <span class="keyword">DATA</span>: lt_employees <span class="type">TYPE TABLE OF REF TO</span> lcl_employee.
+
+  <span class="keyword">APPEND NEW</span> lcl_permanent( iv_emp_id = <span class="string">'EMP-001'</span>
+    iv_name = <span class="string">'Ahmad Fauzi'</span>
+    iv_base_pay = <span class="number">10000000</span> ) <span class="keyword">TO</span> lt_employees.
+
+  <span class="keyword">APPEND NEW</span> lcl_permanent( iv_emp_id = <span class="string">'EMP-002'</span>
+    iv_name = <span class="string">'Siti Rahayu'</span>
+    iv_base_pay = <span class="number">12000000</span> ) <span class="keyword">TO</span> lt_employees.
+
+  <span class="keyword">APPEND NEW</span> lcl_contract( iv_emp_id = <span class="string">'CTR-001'</span>
+    iv_name = <span class="string">'Budi Santoso'</span>
+    iv_base_pay = <span class="number">7000000</span> ) <span class="keyword">TO</span> lt_employees.
+
+  <span class="keyword">APPEND NEW</span> lcl_intern( iv_emp_id = <span class="string">'INT-001'</span>
+    iv_name = <span class="string">'Rizki Pratama'</span>
+    iv_base_pay = <span class="number">4000000</span> ) <span class="keyword">TO</span> lt_employees.
+
+  <span class="comment">" Setup event listener</span>
+  <span class="keyword">DATA</span>(lo_logger) = <span class="keyword">NEW</span> lcl_audit_logger( ).
+  <span class="keyword">LOOP AT</span> lt_employees <span class="keyword">INTO DATA</span>(lo_emp).
+    <span class="keyword">SET HANDLER</span> lo_logger->on_salary_calculated <span class="keyword">FOR</span> lo_emp.
+  <span class="keyword">ENDLOOP</span>.
+
+  <span class="comment">" ═══ CETAK PAYSLIP (Polymorphism) ═══</span>
+  <span class="keyword">LOOP AT</span> lt_employees <span class="keyword">INTO</span> lo_emp.
+    <span class="keyword">WRITE</span>: / lo_emp->get_payslip( ).
+  <span class="keyword">ENDLOOP</span>.
+
+  <span class="comment">" ═══ COMPANY SUMMARY (Static Members) ═══</span>
+  <span class="keyword">WRITE</span>: / <span class="string">|Total Karyawan : { lcl_employee=>gv_total_employees }|</span>.
+  <span class="keyword">WRITE</span>: / <span class="string">|Total Payroll  : Rp { lcl_employee=>gv_total_payroll }|</span>.
+
+<span class="comment">" ═══ Output yang diharapkan: ═══</span>
+<span class="comment">" AUDIT: Gaji EMP-001 = Rp 11000000.00 dicatat.</span>
+<span class="comment">" AUDIT: Gaji EMP-002 = Rp 13200000.00 dicatat.</span>
+<span class="comment">" AUDIT: Gaji CTR-001 = Rp 7000000.00  dicatat.</span>
+<span class="comment">" AUDIT: Gaji INT-001 = Rp 1600000.00  dicatat.</span>
+<span class="comment">" ═══════════════════════════════</span>
+<span class="comment">"   PAYSLIP — Permanent</span>
+<span class="comment">"   ID    : EMP-001</span>
+<span class="comment">"   Nama  : Ahmad Fauzi</span>
+<span class="comment">"   Gaji  : Rp 11000000.00</span>
+<span class="comment">" ═══════════════════════════════</span>
+<span class="comment">" ... (dst untuk semua karyawan)</span>
+<span class="comment">" Total Karyawan : 4</span>
+<span class="comment">" Total Payroll  : Rp 32800000.00</span></pre>
+
+    <hr>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- RANGKUMAN -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <h3>Rangkuman: Mapping Konsep ke Studi Kasus</h3>
+
+    <div class="summary-box">
+      <h4>Konsep OOP dalam Aksi</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Konsep</th>
+            <th>Implementasi dalam Case Study</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Class &amp; Object</td>
+            <td><code>lcl_employee</code>, <code>lcl_permanent</code>, dll</td>
+          </tr>
+          <tr>
+            <td>Encapsulation</td>
+            <td><code>PROTECTED: get_employee_type()</code></td>
+          </tr>
+          <tr>
+            <td>Inheritance</td>
+            <td><code>INHERITS FROM lcl_employee</code></td>
+          </tr>
+          <tr>
+            <td>Polymorphism</td>
+            <td>LOOP → <code>lo_emp->calculate_salary()</code> (1 method, 3 perilaku)</td>
+          </tr>
+          <tr>
+            <td>Abstraction</td>
+            <td><code>ABSTRACT</code> class &amp; method</td>
+          </tr>
+          <tr>
+            <td>Interface</td>
+            <td><code>lif_payable</code>, <code>lif_reportable</code></td>
+          </tr>
+          <tr>
+            <td>Constructor</td>
+            <td><code>constructor</code> di setiap class + <code>super-></code></td>
+          </tr>
+          <tr>
+            <td>Static Members</td>
+            <td><code>gv_total_employees</code>, <code>gv_total_payroll</code></td>
+          </tr>
+          <tr>
+            <td>Events</td>
+            <td><code>salary_calculated</code> + <code>lcl_audit_logger</code></td>
+          </tr>
+          <tr>
+            <td>REDEFINITION</td>
+            <td><code>calculate_salary</code> di tiap child class</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tips-box">
+      <div class="label">Tips Belajar</div>
+      <ol>
+        <li><strong>Mulai dari class sederhana</strong> — jangan langsung bikin sistem besar</li>
+        <li><strong>Pahami visibility</strong> — kapan pakai PUBLIC, PROTECTED, PRIVATE</li>
+        <li><strong>Latihan polymorphism</strong> — bikin 1 parent + 3 child, loop dengan tipe parent</li>
+        <li><strong>Interface wajib dipelajari</strong> — SAP BAdI &amp; RAP sangat bergantung pada interface</li>
+        <li><strong>Baca kode SAP standar</strong> — cari class di SE24, pelajari strukturnya</li>
+        <li><strong>Praktik langsung</strong> — buat program test di SE38/SE80 di SAP system</li>
+      </ol>
+    </div>
+
+    <div class="page-footer">
+      Materi Belajar OOP di ABAP &nbsp;·&nbsp; Dari Dasar Sampai Mahir &nbsp;·&nbsp; 2025
+    </div>
+
+  </div>
+
+</body>
+</html>
